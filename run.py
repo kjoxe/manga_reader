@@ -2,14 +2,21 @@ import sys
 import zipfile
 
 import mangazip
+import mangahelp
 import gui
 
 def print_list(myList):
     for value in myList:
         print(value)
 
+def open_pathlist(myzip, imagepaths):
+    if len(imagepaths)==0:
+        print(sys.argv[0] + ": No images at that location.")
+        sys.exit()
+    manga_gui = gui.Manga_Gui(myzip, imagepaths)
+
 if len(sys.argv)<=2: # no zip file to open
-    print("Manga Reader help:")
+    mangahelp.print_help(sys.argv[0])
     sys.exit()
 if not zipfile.is_zipfile(sys.argv[2]):
     print(sys.argv[0] + ": Invalid zip file.")
@@ -29,8 +36,8 @@ with zipfile.ZipFile(sys.argv[2]) as myzip:
         print_list(files)
         sys.exit()
     elif sys.argv[1]=="open":
+        imagepaths=mangazip.get_files_all(myzip)
+        open_pathlist(myzip, imagepaths)
+    elif sys.argv[1]=="open-dir":
         imagepaths=mangazip.get_files_at_path(myzip, False, dir_depth, internal_directory) # TODO: Add check for image files rather than just if files exist
-        if len(imagepaths)==0:
-            print(sys.argv[0] + ": No images at that location.")
-            sys.exit()
-        manga_gui = gui.Manga_Gui(myzip, imagepaths)
+        open_pathlist(myzip, imagepaths)

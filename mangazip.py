@@ -12,6 +12,13 @@ def file_depth(path):
         counter-=1
     return counter
 
+def get_files_all(zip_file):
+    paths=[]
+    for fileinfo in zip_file.infolist():
+        if not fileinfo.is_dir():
+            paths.append(fileinfo.filename)
+    return paths
+
 def get_files_at_path(zip_file, directories_only, expected_depth, expected_initialpath):
     paths=[]
     for fileinfo in zip_file.infolist():
