@@ -1,15 +1,14 @@
-## TODO: Add KEYBINDS! j/down/space=next k/up=prev q=quit
 ## TODO: Split picture up and display half on either side of screen
 ## TODO: Zooming??
 
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QScrollArea
-from PyQt5.QtGui import QIcon, QPixmap, QPalette, QImage
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QSizePolicy
+from PyQt5.QtGui import QPixmap, QImage, QGuiApplication
 
 import mangazip
 
-class Image_Viewer(QWidget):
+class Image_Viewer(QMainWindow):
  
     def __init__(self, myzip, imagepaths):
         super().__init__()
@@ -30,10 +29,10 @@ class Image_Viewer(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         # Create widgets
-        self.scrollArea = QScrollArea(self)
-        self.scrollArea.setWidgetResizable(True)
-        self.label = QLabel(self.scrollArea)
+        self.label = QLabel(self)
         self.label.setScaledContents(True)
+        self.setCentralWidget(self.label)
+        self.label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
         self.updateUI(self.imagepaths[self.current_image_index])
 
@@ -44,10 +43,9 @@ class Image_Viewer(QWidget):
         with self.zip.open(imagepath) as f:
             image=f.read()
             pixmap = QPixmap.fromImage(QImage.fromData(image))
-            self.label.setPixmap(pixmap)
-            self.resize(pixmap.width(),pixmap.height())
-            self.scrollArea.resize(self.size())
-            self.label.resize(self.size())
+            img_height=QGuiApplication.primaryScreen().availableSize().height()
+            self.label.setPixmap(pixmap.scaledToHeight(img_height, Qt.SmoothTransformation))
+            self.resize(pixmap.width(),img_height)
 
     def nextImage(self):
         if self.current_image_index<len(self.imagepaths)-1:
