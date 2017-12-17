@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QSizePolicy
 from PyQt5.QtGui import QPixmap, QImage, QGuiApplication
 
-import mangazip
+import manga_reader.mangazip as mangazip
 
 class Image_Viewer(QMainWindow):
  
